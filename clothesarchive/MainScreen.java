@@ -10,7 +10,7 @@ public class MainScreen {
 
     public MainScreen(){
 
-        MyJFrame frame = new MyJFrame();
+        new MyJFrame();
     }
 
 
