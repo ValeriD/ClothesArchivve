@@ -7,13 +7,9 @@ package clothesarchive.services.CRUD;
 
 import clothesarchive.exceptions.CAException;
 import clothesarchive.models.RecordDTO;
-import clothesarchive.services.DatabaseConnector;
-import java.io.File;
+import clothesarchive.services.databaseConnector.DatabaseConnector;
+
 import java.sql.Timestamp;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  *
