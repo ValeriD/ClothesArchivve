@@ -9,7 +9,7 @@ public class Heading extends JPanel {
 
 
     public Heading(String msg){
-
+        this.setPreferredSize(new Dimension(100,50));//Setting the size of the panel
         JLabel heading = new JLabel();  //Creating a new label
         heading.setText(msg); //Setting the text
         heading.setFont(CustomFonts.HeadingFont()); //Setting the font for the label

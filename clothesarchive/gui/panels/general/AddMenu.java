@@ -15,17 +15,16 @@ public class AddMenu extends JPanel implements ActionListener {
     JPanel buttons;
     public AddMenu(){
 
-        this.heading = new Heading("Добавяне на запис");
+        this.heading = new Heading("Добавяне на запис"); //Creating new Panel for the heading
+        this.textBoxes = new AddMenuContent(); //Creating new Panel for the text fields
+        this.buttons = new AddMenuButtons(this); // Creating new Panel for the control buttons
 
-        this.textBoxes = new AddMenuContent();
 
-        this.buttons = new AddMenuButtons(this);
+        this.setLayout(new BorderLayout()); //Setting the AddMenu to BorderLayout so that the above panels can go top,center and bottom
 
-        this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
-
-        this.add(heading,BorderLayout.NORTH);
-        this.add(textBoxes, BorderLayout.CENTER);
-        this.add(buttons,BorderLayout.SOUTH);
+        this.add(heading,BorderLayout.NORTH); //Setting the heading position on top side
+        this.add(textBoxes, BorderLayout.CENTER); //Setting the text fields in the center
+        this.add(buttons,BorderLayout.SOUTH); //Setting the buttons on the bottom side
 
         this.setVisible(true);
 
