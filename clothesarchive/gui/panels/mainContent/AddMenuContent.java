@@ -158,9 +158,9 @@ public class AddMenuContent extends JPanel implements ActionListener {
     public void clearAllFields(){
         this.filePath.setText("");
         this.price.setValue(0);
-        this.company.setText("");
-        this.description.setText("");
-        this.name.setText("");
+        this.company.showHint();
+        this.description.showHint();
+        this.name.showHint();
         this.file=null;
     }
 

@@ -10,9 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AddMenu extends JPanel implements ActionListener {
-    JPanel heading;
-    JPanel textBoxes;
-    JPanel buttons;
+    Heading heading;
+    AddMenuContent textBoxes;
+    AddMenuButtons buttons;
     public AddMenu(){
 
         this.heading = new Heading("Добавяне на запис"); //Creating new Panel for the heading
@@ -34,8 +34,10 @@ public class AddMenu extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().toString().contains("Добави")){
             System.out.println("Ok");
+            //TODO When Add pressed save the information in the database
         }else{
-            System.out.println("not ok");
+            this.textBoxes.clearAllFields();
+
         }
     }
 }
