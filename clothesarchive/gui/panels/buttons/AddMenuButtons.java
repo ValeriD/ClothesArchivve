@@ -1,6 +1,5 @@
 package clothesarchive.gui.panels.buttons;
 
-import clothesarchive.exceptions.CAException;
 import clothesarchive.gui.panels.general.AddMenu;
 
 import javax.swing.*;
