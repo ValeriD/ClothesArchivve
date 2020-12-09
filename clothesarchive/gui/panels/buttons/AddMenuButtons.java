@@ -1,12 +1,18 @@
 package clothesarchive.gui.panels.buttons;
 
+import clothesarchive.gui.panels.general.AddMenu;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class AddMenuButtons extends JPanel {
     JButton addButton;
     JButton cancelButton;
-    public AddMenuButtons(){
+    AddMenu addMenu;
+    public AddMenuButtons(AddMenu addMenu){
+        this.addMenu=addMenu;
+
+
         this.setLayout(new GridLayout(1,2)); //Setting the bottom layout to Grid so that 2 flow panels can fit
 
         this.add(createAddButton()); //Adding the left panel
@@ -20,6 +26,7 @@ public class AddMenuButtons extends JPanel {
         this.addButton = new JButton(); //Creating new button
         this.addButton.setText("Добави"); //Setting the text for the button
         this.addButton.setPreferredSize(new Dimension(200,45));//Setting the size of the button
+        this.addButton.addActionListener(this.addMenu);
 
         JPanel leftButton = new JPanel();//Creating new panel for my AddButton
         leftButton.setLayout(new FlowLayout(FlowLayout.LEADING));//Setting the FlowLayout so the button goes right
@@ -33,6 +40,7 @@ public class AddMenuButtons extends JPanel {
         this.cancelButton = new JButton();  //Creating new button
         this.cancelButton.setText("Откажи"); //Setting the text for the button
         this.cancelButton.setPreferredSize(new Dimension(200,45)); //Setting the size of the button
+        this.cancelButton.addActionListener(this.addMenu);
 
         JPanel rightButton = new JPanel(); //Creating new panel for my CancelButton
         rightButton.setLayout(new FlowLayout(FlowLayout.TRAILING));//Setting the FlowLayout so the button goes right
@@ -40,4 +48,13 @@ public class AddMenuButtons extends JPanel {
 
         return rightButton;
     }
+
+    public JButton getAddButton(){
+        return this.addButton;
+    }
+
+    public JButton getCancelButton() {
+        return cancelButton;
+    }
+
 }
