@@ -1,5 +1,7 @@
 package clothesarchive.gui.panels.headings;
 
+import clothesarchive.gui.customSettings.CustomFonts;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,7 +12,7 @@ public class Heading extends JPanel {
 
         JLabel heading = new JLabel();  //Creating a new label
         heading.setText(msg); //Setting the text
-        heading.setFont(new Font("Ariel", Font.PLAIN, 24)); //Setting the font for the label
+        heading.setFont(CustomFonts.HeadingFont()); //Setting the font for the label
 
         this.setLayout(new FlowLayout()); //Setting the panel to Flow
         this.add(heading);  //Adding the heading label
