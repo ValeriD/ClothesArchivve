@@ -1,8 +1,11 @@
 package clothesarchive.gui.panels.general;
 
+import clothesarchive.exceptions.CAException;
 import clothesarchive.gui.panels.buttons.AddMenuButtons;
 import clothesarchive.gui.panels.headings.Heading;
 import clothesarchive.gui.panels.mainContent.AddMenuContent;
+import clothesarchive.services.CRUD.CrudService;
+import clothesarchive.services.CRUD.CrudServiceImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +16,7 @@ public class AddMenu extends JPanel implements ActionListener {
     Heading heading;
     AddMenuContent textBoxes;
     AddMenuButtons buttons;
+    CrudService service;
     public AddMenu(){
 
         this.heading = new Heading("Добавяне на запис"); //Creating new Panel for the heading
@@ -28,16 +32,31 @@ public class AddMenu extends JPanel implements ActionListener {
 
         this.setVisible(true);
 
+        try {
+            this.service = new CrudServiceImpl();
+        } catch (CAException e) {
+            e.show(this);
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        boolean exists=false;
         if(e.getSource().toString().contains("Добави")){
             System.out.println("Ok");
-            //TODO When Add pressed save the information in the database
-        }else{
-            this.textBoxes.clearAllFields();
-
+            try {
+                this.service.saveRecord(this.textBoxes.getNameFromField(), this.textBoxes.getDescription(),
+                        this.textBoxes.getCompany(),
+                        this.textBoxes.getPrice(),
+                        this.textBoxes.getFile());            
+            } catch (CAException caException) {
+                caException.show(this);
+                exists=true;
+            }
         }
+        if(!exists){
+            this.textBoxes.clearAllFields();
+        }
+
     }
 }

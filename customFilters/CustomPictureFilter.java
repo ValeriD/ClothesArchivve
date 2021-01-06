@@ -10,7 +10,7 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  *
- * @author valeri
+ * @author Valeri Dobrev
  */
 public class CustomPictureFilter extends FileFilter {
 

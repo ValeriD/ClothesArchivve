@@ -167,20 +167,27 @@ public class AddMenuContent extends JPanel implements ActionListener {
     /**
      * Getters for the fields that are needed for the backend
      */
-    public HintTextField getNameField() {
-        return name;
+    public String getNameFromField() {
+        if(!name.getText().contains("Име на продукта...")){
+            return name.getText();
+        }
+        return "";
     }
 
-    public HintTextField getDescription() {
-        return description;
+    public String getDescription() {
+        return description.getText();
     }
 
-    public HintTextField getCompany() {
-        return company;
+    public String getCompany() {
+        if(!company.getText().contains("Име на поръчителя...")) {
+            return company.getText();
+        }
+        return "";
     }
 
-    public JFormattedTextField getPrice() {
-        return price;
+    public Double getPrice() {
+        String price = this.price.getText().split("N")[1];
+        return Double.parseDouble(price);
     }
 
     public byte[] getFile() {

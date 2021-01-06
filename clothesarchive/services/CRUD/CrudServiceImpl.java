@@ -32,18 +32,21 @@ public class CrudServiceImpl implements CrudService{
     public void saveRecord(String name, String description, String company, Double price, byte[] file) throws CAException{
         RecordDTO record = new RecordDTO();
         try{
+            //Both validating and creating the record based on the given information
             this.serializeRecord(name, description, company, price,file, record);
         }catch(Exception e){
-            throw new CAException(e.getMessage(), 0);            
+            e.printStackTrace();
+            throw new CAException(e.getMessage(), 0);
         }
         
         int flag = this.connector.addRecord(record);
-        //Handling if the record is successfully inserted into the databse
+
+        //Handling if the record is successfully inserted into the database
         if (flag < 0) {
             throw new CAException("Couldn't save the record in the database", 2);            
         } else if (flag == 0) {
             throw new CAException("Моля сменете наименованието на записа!", 1);
-        } 
+        }
 
     }
 

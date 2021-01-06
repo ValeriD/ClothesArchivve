@@ -26,9 +26,7 @@ public class DatabaseConnector implements DatabaseConnectorInt{
     public DatabaseConnector() throws CAException{
         try
         {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            this.connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","root");  
-            // this.setup();
+            this.connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/clothesarchive?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","root");
         }
         catch(Exception e){
             throw new CAException(e.getMessage(),2);
@@ -271,6 +269,7 @@ public class DatabaseConnector implements DatabaseConnectorInt{
         }
         return false;
     }
+
     /**
      * Method for checking if the record with given index already exists
      * @param index
@@ -283,6 +282,7 @@ public class DatabaseConnector implements DatabaseConnectorInt{
         }
         return false;
     }
+
     @Override
     public void setup() throws CAException{
         String sql = "CREATE DATABASE IF NOT EXISTS clothesarchive charset 'utf-8';" +

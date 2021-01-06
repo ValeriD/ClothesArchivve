@@ -23,13 +23,15 @@ public class CAException extends Exception{
     public int getFlag(){
         return flag;
     }
+
     public void show(JPanel panel){
         if(this.flag==0){
-            JOptionPane.showMessageDialog(panel, this.getMessage());
+            JOptionPane.showMessageDialog (panel, this.getMessage(), "Information", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println(this.getMessage());
         }else if(this.flag==1){
             JOptionPane.showMessageDialog(panel, this.getMessage(), "Warning!", JOptionPane.WARNING_MESSAGE);
         }else if(this.flag==2){
-            JOptionPane.showMessageDialog(panel, this.getMessage(), "Warning!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(panel, this.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
     
