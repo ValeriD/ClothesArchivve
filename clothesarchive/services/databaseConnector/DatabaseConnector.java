@@ -18,8 +18,8 @@ import java.util.List;
  * @author Valeri Dobrev
  */
 public class DatabaseConnector implements DatabaseConnectorInt{
-   
-    private Connection connection;
+   //TODO create unit tests
+    private final Connection connection;
     private PreparedStatement prestatment;
     private ResultSet resultSet;
     private Statement statement;
@@ -40,7 +40,8 @@ public class DatabaseConnector implements DatabaseConnectorInt{
     
     @Override
     public int addRecord(RecordDTO record) {
-       if(!this.exists(record.getId())){
+        //TODO Have to think of another way for doing this
+       if(!this.exists(record.getName())){
            return this.insertRecord(record);
        }else{
            return this.updateRecord(record);
@@ -54,7 +55,7 @@ public class DatabaseConnector implements DatabaseConnectorInt{
     @Override
     public int insertRecord(RecordDTO record) {
         String sql = "INSERT INTO clothes(name, description, company, price, time, file) VALUES(?,?,?,?,?,?)";
-        
+
         if(!this.exists(record.getName())){
             try{
                 this.prestatment = this.connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
@@ -85,7 +86,7 @@ public class DatabaseConnector implements DatabaseConnectorInt{
                 return -1;
             }
         }
-        return 0; 
+        return 0;
     }
 
     /**
@@ -96,30 +97,27 @@ public class DatabaseConnector implements DatabaseConnectorInt{
     @Override
     public int updateRecord(RecordDTO record) {
         String sql = "UPDATE clothes set name=?, description=?, company=?, price=?, time=?, file=? where id = ?";
-        //Implement equals for RecordDTO(the time and the id cannot be changed)and check if the current record is equals to the returned of getByName
-        //if yes then update, else show the message for changing the name of the record
-        if(this.getRecordByName(record.getName()).getId() == record.getId()){
-            try{
+        if(!this.exists(record.getName())) {
+            try {
                 this.prestatment = this.connection.prepareStatement(sql);
-                this.prestatment.setString(1,record.getName());
-                this.prestatment.setString(2,record.getDescription());
-                this.prestatment.setString(3,record.getCompany());
-                this.prestatment.setDouble(4,record.getPrice());
+                this.prestatment.setString(1, record.getName());
+                this.prestatment.setString(2, record.getDescription());
+                this.prestatment.setString(3, record.getCompany());
+                this.prestatment.setDouble(4, record.getPrice());
                 this.prestatment.setTimestamp(5, record.getDate());
                 this.prestatment.setString(6, null);
-                this.prestatment.setLong(7,record.getId());
+                this.prestatment.setLong(7, record.getId());
 
                 int affectedRows = this.prestatment.executeUpdate();
 
-                if(affectedRows==1){
+                if (affectedRows == 1) {
                     return (int) record.getId();
                 }
-            }catch(SQLException e){
+            } catch (SQLException e) {
                 System.out.println(e);
                 return -1;
             }
         }
-        
         return 0;
     }
 
@@ -200,7 +198,6 @@ public class DatabaseConnector implements DatabaseConnectorInt{
                     record=this.serializeRecord(this.resultSet);
                 }
                 i++;
-                
             }
             
             if(i>=1){
@@ -267,10 +264,7 @@ public class DatabaseConnector implements DatabaseConnectorInt{
      */
     @Override
     public boolean exists(String name) {
-        if(this.getRecordByName(name)!= null){    
-            return true;
-        }
-        return false;
+        return this.getRecordByName(name) != null;
     }
 
     /**
@@ -280,31 +274,18 @@ public class DatabaseConnector implements DatabaseConnectorInt{
      */
     @Override
     public boolean exists(long index){
-        if(this.getRecord(index)!=null){
-            return true;
-        }
-        return false;
+        return this.getRecord(index) != null;
     }
 
     @Override
-    public void setup() throws CAException{
-        String sql = "CREATE DATABASE IF NOT EXISTS clothesarchive charset 'utf-8';" +
-                    
-                    "create table if not exists clothes"+
-                    "	(id int primary key auto_increment," +
-                    "    name varchar(100) not null unique," +
-                    "    description varchar(100)," +
-                    "    company varchar(50) not null," +
-                    "    price double not null," +
-                    "    time timestamp," +
-                    "    file longblob);";
-        try{
-            this.statement = this.connection.createStatement();
-            this.statement.executeUpdate(sql);
-        }catch(SQLException e){
-            throw new CAException(e.getMessage(),2);
+    public long getIdByName(String name){
+        if(exists(name)){
+            return getRecordByName(name).getId();
+        }else{
+            return -1;
         }
     }
+
 
 
    
