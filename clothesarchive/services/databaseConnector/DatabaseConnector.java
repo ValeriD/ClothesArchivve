@@ -5,6 +5,7 @@
  */
 package clothesarchive.services.databaseConnector;
 
+import clothesarchive.config.ConfigReader;
 import clothesarchive.exceptions.CAException;
 import clothesarchive.models.RecordDTO;
 
@@ -26,7 +27,9 @@ public class DatabaseConnector implements DatabaseConnectorInt{
     public DatabaseConnector() throws CAException{
         try
         {
-            this.connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/clothesarchive?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","root");
+            ConfigReader reader = new ConfigReader();
+            String url = "jdbc:mysql://"+reader.getDomain()+":"+reader.getPort()+"/"+reader.getDatabaseName()+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+            this.connection=DriverManager.getConnection(url,reader.getUser(), reader.getUserPassword());
         }
         catch(Exception e){
             throw new CAException(e.getMessage(),2);
