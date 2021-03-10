@@ -7,6 +7,7 @@ package clothesarchive.exceptions;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import java.awt.*;
 
 /**
  *
@@ -24,14 +25,14 @@ public class CAException extends Exception{
         return flag;
     }
 
-    public void show(JPanel panel){
+    public void show(Component parent){
         if(this.flag==0){
-            JOptionPane.showMessageDialog (panel, this.getMessage(), "Information", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog (parent, this.getMessage(), "Information", JOptionPane.INFORMATION_MESSAGE);
             System.out.println(this.getMessage());
         }else if(this.flag==1){
-            JOptionPane.showMessageDialog(panel, this.getMessage(), "Warning!", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(parent, this.getMessage(), "Warning!", JOptionPane.WARNING_MESSAGE);
         }else if(this.flag==2){
-            JOptionPane.showMessageDialog(panel, this.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, this.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
     

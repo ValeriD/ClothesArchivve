@@ -18,7 +18,7 @@ import java.util.Currency;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AddMenuContent extends JPanel implements ActionListener {
+public class MenuContent extends JPanel implements ActionListener {
     HintTextField name;
     HintTextField description;
     HintTextField company;
@@ -27,7 +27,7 @@ public class AddMenuContent extends JPanel implements ActionListener {
     JFileChooser fileChooser;
     JTextField filePath;
 
-    public AddMenuContent(){
+    public MenuContent(){
         this.setPreferredSize(new Dimension(100,100));
         this.setLayout(new GridLayout(7,0));
 
@@ -192,5 +192,29 @@ public class AddMenuContent extends JPanel implements ActionListener {
 
     public byte[] getFile() {
         return file;
+    }
+
+
+    /**
+     * Setters for the fields
+     */
+    public void setName(String name) {
+        this.name.setText(name);
+    }
+
+    public void setDescription(String description) {
+        this.description.setText(description);
+    }
+
+    public void setCompany(String company) {
+        this.company.setText(company);
+    }
+
+    public void setPrice(Double price) {
+        this.price.setValue(price);
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 }
