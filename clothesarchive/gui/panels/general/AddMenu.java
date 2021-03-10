@@ -41,22 +41,27 @@ public class AddMenu extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean exists=false;
-        if(e.getSource().toString().contains("Добави")){
-            System.out.println("Ok");
+
+        if(e.getSource().toString().contains("Добави")) {
+            boolean record_exists = false;
             try {
                 this.service.saveRecord(this.textBoxes.getNameFromField(), this.textBoxes.getDescription(),
                         this.textBoxes.getCompany(),
                         this.textBoxes.getPrice(),
-                        this.textBoxes.getFile());            
+                        this.textBoxes.getFile());
             } catch (CAException caException) {
                 caException.show(this);
-                exists=true;
+                record_exists = true;
             }
-        }
-        if(!exists){
+            if (!record_exists) {
+                this.textBoxes.clearAllFields();
+                this.setVisible(false);
+            }
+        }else if(e.getSource().toString().contains("Откажи")){
             this.textBoxes.clearAllFields();
+            this.setVisible(false);
         }
+
 
     }
 }

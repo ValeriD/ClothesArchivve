@@ -93,4 +93,10 @@ public class CrudServiceImpl implements CrudService{
             throw new CAException("Неуспешно изтриване на запис",2);
         }
     }
+
+    @Override
+    public RecordDTO getRecordByName(String name) {
+        return connector.getRecordByName(name);
+    }
+
 }

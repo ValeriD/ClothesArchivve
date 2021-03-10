@@ -40,7 +40,6 @@ public interface CrudService {
      */
     public void serializeRecord(String name, String description, String company, Double price, byte[] file, RecordDTO record)throws Exception;
     
-   // public int updateRecord();
     /**
       * Method for serializing the data from the add menu
       * @param name
@@ -48,5 +47,6 @@ public interface CrudService {
      */
     public void deleteRecord(String name) throws CAException;
     
-    
+    public RecordDTO getRecordByName(String name);
+
 }

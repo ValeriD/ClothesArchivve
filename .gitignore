@@ -1,4 +1,4 @@
 /out/
 .idea/
 lib/
-*.config
+/clothesarchive/config/app.config

@@ -47,8 +47,4 @@ public class AddMenuButtons extends JPanel {
         buttonContainer.add(button); //Adding the button to the panel
         return buttonContainer;
     }
-
-
-
-
 }
