@@ -5,293 +5,109 @@
  */
 package clothesarchive.services.databaseConnector;
 
-import clothesarchive.config.ConfigReader;
-import clothesarchive.exceptions.CAException;
+
+
 import clothesarchive.models.RecordDTO;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
- *
  * @author Valeri Dobrev
  */
-public class DatabaseConnector implements DatabaseConnectorInt{
-   //TODO create unit tests
-    private final Connection connection;
-    private PreparedStatement prestatment;
-    private ResultSet resultSet;
-    private Statement statement;
-    
-    public DatabaseConnector() throws CAException{
-        try
-        {
-            ConfigReader reader = new ConfigReader();
-            String url = "jdbc:mysql://"+reader.getDomain()+":"+reader.getPort()+"/"+reader.getDatabaseName()+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-            this.connection=DriverManager.getConnection(url,reader.getUser(), reader.getUserPassword());
-        }
-        catch(Exception e){
-            throw new CAException(e.getMessage(),2);
-        }
-       
-    }
-    
-    
-    @Override
-    public int addRecord(RecordDTO record) {
-        //TODO Have to think of another way for doing this
-       if(!this.exists(record.getName())){
-           return this.insertRecord(record);
-       }else{
-           return this.updateRecord(record);
-       }
-    }
+public interface DatabaseConnector {
+
     /**
      * Method for adding a Record into the DB
-     * @param record
-     * @return index of the newly added record
-     */
-    @Override
-    public int insertRecord(RecordDTO record) {
-        String sql = "INSERT INTO clothes(name, description, company, price, time, file) VALUES(?,?,?,?,?,?)";
-
-        if(!this.exists(record.getName())){
-            try{
-                this.prestatment = this.connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-
-                this.prestatment.setString(1,record.getName());
-                this.prestatment.setString(2,record.getDescription());
-                this.prestatment.setString(3,record.getCompany());
-                this.prestatment.setDouble(4,record.getPrice());
-                this.prestatment.setTimestamp(5, record.getDate());
-                if(record.getFile()==null){
-                    this.prestatment.setString(6, null);
-                }else{
-                    this.prestatment.setBlob(6,new javax.sql.rowset.serial.SerialBlob(record.getFile()));
-                }
-                int rowAffected = this.prestatment.executeUpdate();
-                if(rowAffected == 1){
-                    this.resultSet=this.prestatment.getGeneratedKeys();
-                    if(this.resultSet.next()){
-                        return this.resultSet.getInt(1);
-                        
-                    }
-                }
-
-            }catch(SQLException e){
-                System.out.println(e);
-                return -1;
-            }catch(Exception e){
-                return -1;
-            }
-        }
-        return 0;
-    }
+     * @param record to be added
+     * @return index of the newly added record, -1 if error occurs or record with that name already exists
+     * @throws SQLException when there is record with this name or null name used
+    */
+    int insertRecord(RecordDTO record) throws SQLException;
 
     /**
      * Updates a record in the DB
-     * @param record
-     * @return index of the updated record
-     */
-    @Override
-    public int updateRecord(RecordDTO record) {
-        String sql = "UPDATE clothes set name=?, description=?, company=?, price=?, time=?, file=? where id = ?";
-        if(!this.exists(record.getName())) {
-            try {
-                this.prestatment = this.connection.prepareStatement(sql);
-                this.prestatment.setString(1, record.getName());
-                this.prestatment.setString(2, record.getDescription());
-                this.prestatment.setString(3, record.getCompany());
-                this.prestatment.setDouble(4, record.getPrice());
-                this.prestatment.setTimestamp(5, record.getDate());
-                this.prestatment.setString(6, null);
-                this.prestatment.setLong(7, record.getId());
-
-                int affectedRows = this.prestatment.executeUpdate();
-
-                if (affectedRows == 1) {
-                    return (int) record.getId();
-                }
-            } catch (SQLException e) {
-                System.out.println(e);
-                return -1;
-            }
-        }
-        return 0;
-    }
+     * @param record to be saved
+     * @return index of the updated record, -1 if error occurs
+     * @throws SQLException when there is record with this name or null name used
+    */
+    int updateRecord(RecordDTO record) throws SQLException; //FIXME might need to pass the index as parameter
 
     /**
      * Deletes record from the DB
-     * @param index
-     * @return 1 if successfully deleted and 0 if not
-     */
-    @Override
-    public int deleteRecord(long index) {
-        String sql = "DELETE FROM clothes WHERE id = ?";
-        try{
-            this.prestatment=this.connection.prepareStatement(sql);
-            this.prestatment.setLong(1, index);
-            
-            int affectedRows = this.prestatment.executeUpdate();
-            if(affectedRows==1){
-                return 1;
-            }
-        }catch(SQLException e){
-            System.out.println(e);
-            return -1;
-        }
-        return 0;
-    }
+     * @param index if the record to be deleted
+     * @return 1 if successfully deleted and 0 if not found, -1 if not valid index or error occurs
+     * @throws SQLException when used invalid index
+    */
+    int deleteRecord(long index) throws SQLException;
 
     /**
-     *  Method for retrieving record from the DB
-     * @param index
-     * @return the record from the DB
+     * Deletes record from the DB by name
+     * @param name of the record to be deleted
+     * @return 1 if successfully deleted, 0 if not found, -1 if the name is invalid
+     * @throws SQLException when used null name
+    */
+     int deleteRecordByName(String name) throws SQLException;
+
+    /**
+     * Method that deletes all the records in the database
+     * @return 1 if successful
+     * @throws SQLException if error occurs
+    */
+    int deleteAll() throws SQLException;
+
+     /**
+      *  Method for retrieving record from the DB
+      * @param index of the record to be retrieved
+      * @return the record from the DB
+      * @throws SQLException when used null name or record not found
      */
-    @Override
-    public RecordDTO getRecord(long index) {
-        String sql = "Select * from clothes where id=?";
-        RecordDTO record = null;
-        try{
-            this.prestatment = this.connection.prepareStatement(sql);
-            this.prestatment.setLong(1, index);
-            
-            this.resultSet = this.prestatment.executeQuery();
-            int i=0;
-            while(this.resultSet.next()){
-                if(i==0){
-                    record = this.serializeRecord(this.resultSet);
-                }
-                i++;
-                
-            }
-            if(i==1){
-                return record;
-            }else{
-                return null;
-            }
-        }catch(SQLException e){
-            System.out.println(e);
-        }
-        return record;
-    }
+     RecordDTO getRecord(long index) throws SQLException;
     
-    /**
-     *  Method for retrieving record from the DB by name
-     * @param name
-     * @return the record from the DB
+     /**
+      *  Method for retrieving record from the DB by name
+      * @param name of the record to be retrieved
+      * @return the record from the DB, null if not found or error occurs
+      * @throws SQLException when used null name or record not found
      */
-    @Override
-    public RecordDTO getRecordByName(String name) {
-        String sql = "Select * from clothes where name=?";
-        RecordDTO record = null;
-        int i=0;
-        try{
-            this.prestatment = this.connection.prepareStatement(sql);
-            this.prestatment.setString(1, name);
-            
-            
-            this.resultSet = this.prestatment.executeQuery();
-            while(this.resultSet.next()){
-                if(i==0){
-                    record=this.serializeRecord(this.resultSet);
-                }
-                i++;
-            }
-            
-            if(i>=1){
-                return record;
-            }else{
-                return null;
-            }
-            
-        }catch(SQLException e){
-            System.out.println(e);
-        }
-        
-        return record;
-    }
+     RecordDTO getRecordByName(String name) throws SQLException;
+
+     /**
+      * Method for retrieving all records form the DB
+      * @return List of Records
+      * @throws SQLException when error occures
+     */
+    List<RecordDTO> getRecords() throws SQLException;
 
     /**
-     * Method for retrieving all records form the DB
-     * @return List of Records
-     */
-    @Override
-    public List<RecordDTO> getRecords() {
-        List<RecordDTO> records = new ArrayList();
-        
-        String sql = "Select * from clothes";
-        
-        try{
-            this.prestatment = this.connection.prepareStatement(sql);
-            
-            this.resultSet = this.prestatment.executeQuery();
-            while(this.resultSet.next()){
-                records.add(this.serializeRecord(this.resultSet));
-            }
-        }catch(SQLException e){
-            System.out.println(e);
-
-        }
-        
-        return records;
-    }
+     *Method that retrieves the names of all the records
+     * @return List of names
+     * @throws SQLException when error occurs
+    */
+    List<String> getRecordsNames() throws SQLException;
 
     /**
      * Used for creating RecordDTO object from ResultSet
-     * @param resultSet
+     * @param resultSet of the sql query
      * @return Record
-     * @throws SQLException
-     */
-    @Override
-    public RecordDTO serializeRecord(ResultSet resultSet) throws SQLException{
-        RecordDTO record = new RecordDTO();
-        record.setId(resultSet.getLong("id"));
-        record.setName(resultSet.getString("name"));
-        record.setDescription(resultSet.getString("description"));
-        record.setCompany(resultSet.getString("company"));
-        record.setPrice(resultSet.getLong("price"));
-        record.setDate(resultSet.getTimestamp("time"));
-        record.setFile(resultSet.getBytes("file"));
-        return record;
-    }
-
-     /**
-     * Method for checking if the record with given name already exists
-     * @param name
-     * @return true if yes, false - if not
-     */
-    @Override
-    public boolean exists(String name) {
-        return this.getRecordByName(name) != null;
-    }
+     * @throws SQLException when failed to get field
+    */
+    RecordDTO serializeRecord(ResultSet resultSet)throws SQLException;
 
     /**
-     * Method for checking if the record with given index already exists
-     * @param index
-     * @return true if yes, false - if not
-     */
-    @Override
-    public boolean exists(long index){
-        return this.getRecord(index) != null;
-    }
-
-    @Override
-    public long getIdByName(String name){
-        if(exists(name)){
-            return getRecordByName(name).getId();
-        }else{
-            return -1;
-        }
-    }
+     * Method that accepts result set of the names of all records and converts it to List
+     * @param set of the names
+     * @return List of the names
+     * @throws SQLException when couldn't access the name field
+    */
+    List<String> serializeNames(ResultSet set) throws SQLException;
 
 
 
-   
-
-    
-    
-    
-    
+    /**
+     * Method that closes the connection to the database
+     * @throws SQLException when an error from the database occurs
+    */
+    void closeConnection() throws SQLException;
 }

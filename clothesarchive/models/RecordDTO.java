@@ -6,6 +6,8 @@
 package clothesarchive.models;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Objects;
 
 
 /**
@@ -25,6 +27,7 @@ public class RecordDTO {
     public RecordDTO(){
         
     }
+
     public RecordDTO(String name, String description, String company,double price, byte[] file, Timestamp date) {
         this.id=0;
         this.name = name;
@@ -35,6 +38,9 @@ public class RecordDTO {
         this.date = date;
     }
 
+    /**
+     * Getters and setters
+     */
     public long getId() {
         return id;
     }
@@ -97,9 +103,19 @@ public class RecordDTO {
     public String toString() {
         return "RecordDTO{" +"id=" + id + ", name=" + name + ", description=" + description + ", company=" + company + ", price=" + price + ", date=" + date + '}';
     }
-    
-    
-    
-    
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RecordDTO recordDTO = (RecordDTO) o;
+        return id == recordDTO.id && Double.compare(recordDTO.price, price) == 0 && name.equals(recordDTO.name) && Objects.equals(description, recordDTO.description) && Objects.equals(company, recordDTO.company) && Arrays.equals(file, recordDTO.file);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id, name, description, company, price, date);
+        result = 31 * result + Arrays.hashCode(file);
+        return result;
+    }
 }
