@@ -7,55 +7,69 @@ package clothesarchive.services.CRUD;
 
 import clothesarchive.exceptions.CAException;
 import clothesarchive.models.RecordDTO;
-import clothesarchive.services.databaseConnector.DatabaseConnector;
+import clothesarchive.services.databaseConnector.DatabaseConnectorImpl;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Valeri Dobrev
  */
 public class CrudServiceImpl implements CrudService{
-    
-    private DatabaseConnector connector;
-    
-    
+    private final DatabaseConnectorImpl connector;
+
+    //------------------------------------------------------------------------------------------------------------------
     public CrudServiceImpl() throws CAException{
-        this.connector = new DatabaseConnector();
+        this.connector = new DatabaseConnectorImpl();
     }
 
-     /**
-     * Method for handling the save action
-     * @throws CAException
-     */
+    //------------------------------------------------------------------------------------------------------------------
     @Override
-    public void saveRecord(String name, String description, String company, Double price, byte[] file) throws CAException{
-        RecordDTO record = new RecordDTO();
+    public void saveRecord(String name, String description, String company, Double price, byte[] file, int flag, String... oldName) throws CAException {
+        RecordDTO record;
         try{
             //Both validating and creating the record based on the given information
-            this.serializeRecord(name, description, company, price,file, record);
+            record = this.serializeRecord(name, description, company, price,file);
         }catch(Exception e){
             e.printStackTrace();
             throw new CAException(e.getMessage(), 0);
         }
-        
-        int flag = this.connector.addRecord(record);
 
-        //Handling if the record is successfully inserted into the database
-        if (flag < 0) {
-            throw new CAException("Couldn't save the record in the database", 2);            
-        } else if (flag == 0) {
-            throw new CAException("Моля сменете наименованието на записа!", 1);
+        try {
+            if (flag == 1) {
+                if(exists(name)){
+                    throw new CAException("Запис с такова име вече съществува!",1);
+                }
+                this.connector.insertRecord(record);
+
+            } else if(oldName.length==1){                                       //Checking if the oldName parameter is passed
+                RecordDTO oldRecord = connector.getRecordByName(oldName[0]);    //Get the record that we want to update
+                if(oldRecord==null){
+                    throw new CAException("Запис с такова име не съществува!",2);
+                }
+
+                if(!oldRecord.getName().equals(name)){                             //Checks if the name is changed
+                    if(exists(name)){                                           //If changed check if the new name already exists
+                        throw new CAException("Запис с такова име вече съществува!",1);
+                    }
+                }
+
+                record.setId(oldRecord.getId());
+                this.connector.updateRecord(record);                    //Else we just update the record
+            }
+        }catch (SQLException e){
+            throw new CAException("Грешка в базата от данни при запазване на данните!", 2);
         }
 
     }
-
-     /**
-      * Method for serializing the data from the add menu
-      * @throws CAException
-     */
+    //------------------------------------------------------------------------------------------------------------------
     @Override
-    public void serializeRecord(String name, String description, String company, Double price, byte[] file, RecordDTO record) throws Exception{
+    public RecordDTO serializeRecord(String name, String description, String company, Double price, byte[] file) throws Exception{
+
+        RecordDTO record = new RecordDTO();
         if (!name.equals("")) {
             record.setName(name);
         } else {
@@ -67,36 +81,77 @@ public class CrudServiceImpl implements CrudService{
         } else {
             throw new Exception("Моля въведете поръчител!");
         }
-        if (price!=0.0) {
+        if (price>0.0) {
             record.setPrice(price);
         } else {
             throw new Exception("Моля въведете цена!");
         }
         record.setDate(new Timestamp(System.currentTimeMillis()));
-        record.setFile(file);          
+        record.setFile(file);
+        return record;
     }
 
-    /**
-      * Method for serializing the data from the add menu
-      * @param name
-      * @throws CAException
-     */
+    //------------------------------------------------------------------------------------------------------------------
     @Override
-    public void deleteRecord(String name) throws CAException {
-        RecordDTO record = this.connector.getRecordByName(name);
-       
-        int flag;
-        flag = this.connector.deleteRecord(record.getId());
-        if(flag==1){
-            throw new CAException("Успешно изтриване на запис!",0);
-        }else {
-            throw new CAException("Неуспешно изтриване на запис",2);
+    public int deleteRecord(String name) throws CAException {
+        int isDeleted;
+        try {
+            isDeleted = this.connector.deleteRecordByName(name);
+        } catch (SQLException sqlException) {
+            throw new CAException("Имаето на записът има стойност NULL",2);
+        }
+        return isDeleted;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    public void deleteAllRecords() throws SQLException {
+        connector.deleteAll();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    @Override
+    public RecordDTO getRecordByName(String name) throws CAException {
+        RecordDTO record;
+
+        try {
+            record = connector.getRecordByName(name);
+        } catch (SQLException sqlException) {
+            throw new CAException("Стойността за име е NULL!",2);
+        }
+        return record;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    @Override
+    public List<RecordDTO> getRecords() throws CAException {
+        ArrayList<RecordDTO> records;
+        try{
+           records = (ArrayList<RecordDTO>) this.connector.getRecords();
+        }catch (SQLException e){
+            throw new CAException("Грешка в базата при вземането на всички записи!",2);
+        }
+        return records;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    @Override
+    public boolean exists(String name) throws CAException {
+        try {
+            if(this.connector.getRecordByName(name)!=null){
+                return true;
+            }
+        } catch (SQLException sqlException) {
+            throw new CAException("Грешка в базата от данни или Име със стойност NULL!",2);
+        }
+        return false;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    public void closeDatabaseConnection() throws CAException {
+        try {
+            this.connector.closeConnection();
+        } catch (SQLException sqlException) {
+            throw new CAException("Unable to close the connection!", 1);
         }
     }
-
-    @Override
-    public RecordDTO getRecordByName(String name) {
-        return connector.getRecordByName(name);
-    }
-
 }
