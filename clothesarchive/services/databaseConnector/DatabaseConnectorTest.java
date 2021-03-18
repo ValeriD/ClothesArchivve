@@ -9,11 +9,14 @@ import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ *
+ * @author Valeri Dobrev
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DatabaseConnectorTest {
     RecordDTO record;
-     DatabaseConnectorImpl connector;
+    DatabaseConnectorImpl connector;
 
     @BeforeAll
     public void init(){
@@ -47,7 +50,7 @@ class DatabaseConnectorTest {
         @Test
         @DisplayName("Insert record that already exists")
         void insertRecordThatExists() throws SQLException {
-            int res = connector.insertRecord(record);
+            connector.insertRecord(record);
             assertEquals(1, connector.getRecords().size());
             assertThrows(SQLException.class, ()->connector.insertRecord(record));
         }
@@ -85,13 +88,14 @@ class DatabaseConnectorTest {
             int res = connector.updateRecord(record);
             assertEquals(0,res);
         }
-        //FIXME
-        @Disabled
+
+
         @Test
         @DisplayName("Update with the existing name")
         void updateWithExistingName() throws SQLException {
-            record.setName("Test");
+            record.setName("Test1");
             connector.insertRecord(record);
+            record.setId(this.id);
             assertThrows(SQLException.class,()->connector.updateRecord(record));
         }
         @Test
@@ -248,8 +252,8 @@ class DatabaseConnectorTest {
             }
             @Test
             @DisplayName("Retrieve record by not existing name")
-            void getByNotExistingName(){
-                assertThrows(SQLException.class, ()->connector.getRecordByName("Test1"));
+            void getByNotExistingName() throws SQLException {
+                assertNull(connector.getRecordByName("Test1"));
             }
             @Test
             @DisplayName("Retrieve record by null name")
@@ -289,7 +293,7 @@ class DatabaseConnectorTest {
         }
     }
 
-    @AfterAll
+    @AfterEach
     public void deleteAllRecords() throws SQLException {
         this.connector.deleteAll();
     }

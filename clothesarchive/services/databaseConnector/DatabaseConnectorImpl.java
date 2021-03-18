@@ -128,6 +128,9 @@ public class DatabaseConnectorImpl implements DatabaseConnector {
     @Override
     public int deleteAll() throws SQLException {
         ArrayList<String> names = (ArrayList<String>) getRecordsNames();
+        if(names==null){
+            return -1;
+        }
         for (String name:names) {
             deleteRecordByName(name);
         }
@@ -160,13 +163,16 @@ public class DatabaseConnectorImpl implements DatabaseConnector {
     //------------------------------------------------------------------------------------------------------------------
     @Override
     public RecordDTO getRecordByName(String name) throws SQLException {
+
+        if(name==null){
+            throw new SQLException();
+        }
         String sql = "Select * from clothes where name=?";
         RecordDTO record = null;
         int i=0;
 
         this.prestatment = this.connection.prepareStatement(sql);
         this.prestatment.setString(1, name);
-
 
         this.resultSet = this.prestatment.executeQuery();
         while(this.resultSet.next()) {
@@ -179,7 +185,7 @@ public class DatabaseConnectorImpl implements DatabaseConnector {
         if(i>=1){
             return record;
         }else{
-            throw new SQLException();
+            return null;
         }
     }
 
@@ -229,11 +235,16 @@ public class DatabaseConnectorImpl implements DatabaseConnector {
 
     //------------------------------------------------------------------------------------------------------------------
     @Override
-    public List<String> serializeNames(ResultSet set) throws SQLException {
+    public List<String> serializeNames(ResultSet set) {
         ArrayList<String> names= new ArrayList<>();
         while(true){
-            if (!set.next()) break;
-            names.add(set.getString("name"));
+            try {
+                if (!set.next()) break;
+                names.add(set.getString("name"));
+            } catch (SQLException throwables) {
+                return null;
+            }
+
         }
         return names;
     }
