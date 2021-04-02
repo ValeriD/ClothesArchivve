@@ -1,11 +1,7 @@
 package clothesarchive.gui.panels.mainContent;
 
-import clothesarchive.MainScreen;
 import clothesarchive.exceptions.CAException;
-import clothesarchive.gui.customSettings.CustomFonts;
-import clothesarchive.gui.customSettings.HintTextField;
-import clothesarchive.gui.customSettings.FormattedFieldListener;
-import customFilters.CustomPictureFilter;
+import clothesarchive.gui.customSettings.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +12,7 @@ import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.Currency;
 
-
-//TODO create a box for the image and the inserted image should be loaded there
+//TODO custom settings: class that extends ImageIcon and to set maximum size of the picture + resizing method
 public class MenuContent extends JPanel implements ActionListener {
     HintTextField name;
     HintTextField description;
@@ -43,7 +38,11 @@ public class MenuContent extends JPanel implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
         this.image = new JLabel();
-        this.setImage(null);
+        try {
+            this.setImage(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         this.addObjectToGridBag(this.image, imageContainer, gbc, 1,1);
         return imageContainer;
@@ -197,7 +196,15 @@ public class MenuContent extends JPanel implements ActionListener {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             this.file = fileChooser.getSelectedFile();  //Getting the selected file
             this.filePath.setText(file.getAbsolutePath());  //Setting the file path to the text field
-            this.setImage(this.file);
+            try {
+                this.setImage(this.file);
+            } catch (IOException ioException) {
+                try {
+                    throw new CAException("Проблем при реоразмеряването на изображението", 2);
+                } catch (CAException caException) {
+                    caException.show(this);
+                }
+            }
         } else {
             System.out.println("File access cancelled by user.");
         }
@@ -268,10 +275,10 @@ public class MenuContent extends JPanel implements ActionListener {
         this.price.setValue(price);
     }
 
-    public void setImage(File image) {
+    public void setImage(File image) throws IOException {
         if(file!=null){
             this.image.setText("");
-            this.image.setIcon(new ImageIcon(image.getAbsolutePath()));
+            this.image.setIcon(CAImageResizer.resize(file));
         }else{
             this.image.setText("No image");
         }
