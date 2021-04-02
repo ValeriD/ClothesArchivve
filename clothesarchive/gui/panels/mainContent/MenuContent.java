@@ -12,13 +12,14 @@ import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.Currency;
 
-//TODO custom settings: class that extends ImageIcon and to set maximum size of the picture + resizing method
 public class MenuContent extends JPanel implements ActionListener {
     HintTextField name;
     HintTextField description;
     HintTextField company;
     JFormattedTextField price;
     File file = null;
+    JButton selectFileButton;
+
     JLabel image;
     JFileChooser fileChooser;
     JTextField filePath;
@@ -26,8 +27,6 @@ public class MenuContent extends JPanel implements ActionListener {
 
     public MenuContent(){
         this.setLayout(new GridLayout(0,2));
-        JPanel right= new JPanel(new FlowLayout(FlowLayout.TRAILING));
-
         this.add(generateFields());
         this.add(generateImageField());
         this.setVisible(true);
@@ -67,7 +66,7 @@ public class MenuContent extends JPanel implements ActionListener {
     }
 
     /**
-     * Methods that adds compnent to GridBag panel
+     * Methods that adds component to GridBag panel
      * @param component to be added
      * @param container to be added to
      * @param gbc instance of GridBagConstraints that is used to set the position of the element
@@ -167,7 +166,7 @@ public class MenuContent extends JPanel implements ActionListener {
      * @return JPanel
      */
     private JPanel createFileUpload(){
-        JButton selectButton = new JButton("Избор на файл...");
+        this.selectFileButton = new JButton("Избор на файл...");
         this.filePath = new JTextField();
 
         this.filePath.setPreferredSize(new Dimension(200,35));
@@ -175,15 +174,15 @@ public class MenuContent extends JPanel implements ActionListener {
         this.filePath.setFocusable(false);
 
 
-        selectButton.setPreferredSize(new Dimension(100,35));
+        selectFileButton.setPreferredSize(new Dimension(100,35));
 
-        selectButton.addActionListener(this);
+        selectFileButton.addActionListener(this);
 
         this.fileChooser=new JFileChooser();
         this.fileChooser.setFileFilter(new CustomPictureFilter());
         this.fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
-        return this.setupContentLayout(filePath, selectButton);
+        return this.setupContentLayout(filePath, selectFileButton);
     }
 
     /**
@@ -199,15 +198,27 @@ public class MenuContent extends JPanel implements ActionListener {
             try {
                 this.setImage(this.file);
             } catch (IOException ioException) {
-                try {
-                    throw new CAException("Проблем при реоразмеряването на изображението", 2);
-                } catch (CAException caException) {
-                    caException.show(this);
-                }
+                new CAException("Проблем при преоразмеряването на снимката!", 2).show(this);
             }
         } else {
             System.out.println("File access cancelled by user.");
         }
+    }
+    public void setFields(String name, String description, String company, double price, byte[] file, boolean focusable){
+        setName(name);
+        setDescription(description);
+        setCompany(company);
+        setPrice(price);
+        try {
+            setFile(file);
+        } catch (CAException e) {
+            e.show(this);
+        }
+        this.name.setFocusable(focusable);
+        this.description.setFocusable(focusable);
+        this.company.setFocusable(focusable);
+        this.price.setFocusable(focusable);
+        fileChooser.setFocusable(focusable);
     }
     /**
      * Method for clearing all the fields

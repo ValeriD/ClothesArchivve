@@ -1,6 +1,8 @@
 package clothesarchive.gui.panels.general.viewEditAdd;
 
 import clothesarchive.exceptions.CAException;
+import clothesarchive.gui.panels.mainContent.MenuContent;
+import clothesarchive.models.RecordDTO;
 import clothesarchive.services.CRUD.CrudService;
 
 import java.awt.event.ActionEvent;
@@ -9,6 +11,11 @@ public class EditMenu extends Menu {
     public EditMenu( CrudService service) {
         super("Редактиране на запис", service);
     }
+
+    protected boolean areFieldsFocusable(){
+        return true;
+    }
+
 
     @Override
     void checkSave(ActionEvent e) {

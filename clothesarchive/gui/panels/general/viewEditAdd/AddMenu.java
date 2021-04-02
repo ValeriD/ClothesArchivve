@@ -1,6 +1,7 @@
 package clothesarchive.gui.panels.general.viewEditAdd;
 
 import clothesarchive.exceptions.CAException;
+import clothesarchive.gui.panels.mainContent.MenuContent;
 import clothesarchive.services.CRUD.CrudService;
 
 import javax.swing.*;
@@ -11,6 +12,11 @@ public class AddMenu extends Menu {
 
     public AddMenu(CrudService service){
         super("Добавяне на елемент",service);
+    }
+
+    @Override
+    protected boolean areFieldsFocusable() {
+        return true;
     }
 
     @Override
