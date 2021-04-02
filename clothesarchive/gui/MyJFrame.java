@@ -1,6 +1,7 @@
 package clothesarchive.gui;
 
 import clothesarchive.exceptions.CAException;
+import clothesarchive.gui.panels.general.viewEditAdd.AddMenu;
 import clothesarchive.gui.panels.general.viewEditAdd.Menu;
 import clothesarchive.services.CRUD.CrudService;
 import clothesarchive.services.CRUD.CrudServiceImpl;
@@ -15,11 +16,12 @@ public class MyJFrame extends JFrame {
 
     public MyJFrame(){
         this.setSize(960,720);
-
         this.setResizable(true);
         this.setTitle("ClothesArchive");
         this.setIconImage(new ImageIcon("static/icons/img.png").getImage());
-        CrudService service = null;
+
+        CrudService service;
+
         try {
             service = new CrudServiceImpl();
         } catch (CAException e) {
@@ -27,6 +29,7 @@ public class MyJFrame extends JFrame {
             this.setVisible(false);
             this.dispose();
             System.exit(0);
+            return;
         }
 
         Menu addMenu = new AddMenu(service);

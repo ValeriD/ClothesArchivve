@@ -22,19 +22,21 @@ public class MenuButtons extends JPanel {
             this.add(createButton(1,"Добави")); //Adding the left panel
             this.add(createButton(0,"Откажи"));//Adding the right panel
         }else if(menu instanceof EditMenu){
-            this.add(createButton(1,"Запази")); //Adding the left panel
-            this.add(createButton(0,"Откажи"));//Adding the right panel
+            this.add(createButton(1,"Запази"));
+            this.add(createButton(0,"Откажи"));
         }else if(menu instanceof ViewMenu){
-            this.add(createButton(0,"Назад"));//Adding the right panel
+            this.add(createButton(0,"Назад"));
         }
+
         this.setVisible(true);
 
     }
     /**
      * Method for creating aligned buttons
      * @param flag :
-     *             1 if the button is for adding
-     *             0 if the button is for canceling
+     *             1 if the button is for leading
+     *             0 if the button is for trailing
+     * @param text: the text of the button
      * @return JPanel
      */
     private JPanel createButton(int flag, String text){
@@ -43,15 +45,15 @@ public class MenuButtons extends JPanel {
         button.addActionListener(this.menu); //Adding a listener for the button
 
         JPanel buttonContainer = new JPanel(); //Creating a panel for the button
+        button.setText(text);//Setting the text for the button
 
         //Checks if which button is wanted to be created
         if(flag==1){
-            button.setText(text);//Setting the text for the button
             buttonContainer.setLayout(new FlowLayout(FlowLayout.LEADING)); //Creating FlowLayout so that the button is aligned left
         }else{
-            button.setText(text); //Setting the text for the button
             buttonContainer.setLayout(new FlowLayout(FlowLayout.TRAILING)); //Creating FlowLayout so that the button is aligned right
         }
+
         buttonContainer.add(button); //Adding the button to the panel
         return buttonContainer;
     }

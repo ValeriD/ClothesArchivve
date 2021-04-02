@@ -14,7 +14,7 @@ import java.awt.*;
  * @author valeri
  */
 public class CAException extends Exception{
-    private int flag;
+    private final int flag;
     
     public CAException(String msg, int flag){
         super(msg);
