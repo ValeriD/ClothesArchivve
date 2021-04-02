@@ -39,26 +39,13 @@ public abstract class Menu extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(e.getSource().toString().contains("Добави")) {
-            boolean record_exists = false;
-            try {
-                this.service.saveRecord(this.content.getNameFromField(), this.content.getDescription(),
-                        this.content.getCompany(),
-                        this.content.getPrice(),
-                        this.content.getFile());
-            } catch (CAException caException) {
-                caException.show(this);
-                record_exists = true;
-            }
-            if (!record_exists) {
-                this.content.clearAllFields();
-                this.setVisible(false);
-            }
-        }else if(e.getSource().toString().contains("Откажи")){
+        if(e.getSource().toString().contains("Откажи") || e.getSource().toString().contains("Откажи")){
             this.content.clearAllFields();
             this.setVisible(false);
         }
-
+        checkSave(e);
 
     }
+
+    abstract void checkSave(ActionEvent event);
 }
