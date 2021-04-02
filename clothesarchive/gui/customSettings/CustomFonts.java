@@ -9,9 +9,9 @@ public class CustomFonts {
     }
 
     public static Font HintFont(){
-        return new Font("Ariel", Font.ITALIC, 14);
+        return new Font("Ariel", Font.ITALIC, 12);
     }
     public static Font TextBoxTextFont(){
-        return new Font("Ariel", Font.PLAIN, 18);
+        return new Font("Ariel", Font.PLAIN, 16);
     }
 }

@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//TODO abstract method save
 public abstract class Menu extends JPanel implements ActionListener {
     Heading heading;
     MenuContent content;

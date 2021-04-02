@@ -9,7 +9,7 @@
 //import clothesarchive.services.CRUD.CrudServiceImpl;
 //import clothesarchive.models.RecordDTO;
 //import clothesarchive.services.*;
-//import customFilters.CustomPictureFilter;
+//import clothesarchive.gui.customSettings.CustomPictureFilter;
 //import java.io.File;
 //import java.io.FileReader;
 //import java.io.IOException;

@@ -46,7 +46,6 @@ public class MenuButtons extends JPanel {
 
         JPanel buttonContainer = new JPanel(); //Creating a panel for the button
         button.setText(text);//Setting the text for the button
-
         //Checks if which button is wanted to be created
         if(flag==1){
             buttonContainer.setLayout(new FlowLayout(FlowLayout.LEADING)); //Creating FlowLayout so that the button is aligned left
@@ -57,4 +56,6 @@ public class MenuButtons extends JPanel {
         buttonContainer.add(button); //Adding the button to the panel
         return buttonContainer;
     }
+
+    //TODO method that returns Action that performs save method in the menu class
 }
