@@ -18,6 +18,8 @@ import java.util.Currency;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+//TODO create a box for the image and the inserted image should be loaded there
 public class MenuContent extends JPanel implements ActionListener {
     HintTextField name;
     HintTextField description;
@@ -27,30 +29,67 @@ public class MenuContent extends JPanel implements ActionListener {
     JFileChooser fileChooser;
     JTextField filePath;
 
+
     public MenuContent(){
-        this.setPreferredSize(new Dimension(100,100));
-        this.setLayout(new GridLayout(7,0));
+        this.setLayout(new GridLayout(0,2));
+        JPanel right= new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
-        this.add(this.createFields(1)); //Creating name field
-        this.add(this.createFields(2)); //Creating description field
-        this.add(this.createFields(3)); //Creating company name field
-        this.add(this.createPriceField());  //Creating price field
-        this.add(this.createFileUpload());  //Creating file upload button
-
-
+        this.add(generateFields());
+        this.add(right);
         this.setVisible(true);
     }
+
     /**
-     * Method for creating text fields
-     * @param flag :
-     *             1 if the text field is for name
-     *             2 if the text field is for description
-     *             3 if the text field is for company name
-     * @return JPanel
+     * Method that generates the fields
+     * @return JPanel with the fields
      */
+    private JPanel generateFields(){
+        GridBagConstraints gbc = new GridBagConstraints();
+        JPanel fieldsContainer = new JPanel(new GridBagLayout());
+
+        gbc.insets = new Insets(10,10,10,10);
+
+        this.addObjectToGridBag(this.createFields(1), fieldsContainer, gbc, 1,1 );
+        this.addObjectToGridBag(this.createFields(2), fieldsContainer, gbc, 1,2 );
+        this.addObjectToGridBag(this.createFields(3), fieldsContainer, gbc, 1,3 );
+        this.addObjectToGridBag(this.createPriceField(), fieldsContainer, gbc, 1,4 );
+        this.addObjectToGridBag(this.createFileUpload(), fieldsContainer, gbc, 1,5 );
+        return fieldsContainer;
+    }
+    /**
+     * Methods that adds compnent to GridBag panel
+     * @param component to be added
+     * @param container to be added to
+     * @param gbc instance of GridBagConstraints that is used to set the position of the element
+     * @param gridx x position
+     * @param gridy y posiotion
+     * @param gridwidth how wide the element to be
+     * @param gridheight how high the element to be
+     */
+    private void addObjectToGridBag(Component component, Container container, GridBagConstraints gbc, int gridx, int gridy, int gridwidth, int gridheight){
+        gbc.gridx = gridx;
+        gbc.gridy = gridy;
+
+        gbc.gridheight = gridheight;
+        gbc.gridwidth = gridwidth;
+
+        container.add(component, gbc);
+
+    }
+    private void addObjectToGridBag(Component component, Container container, GridBagConstraints gbc, int gridx, int gridy) {
+        this.addObjectToGridBag(component,container, gbc,gridx,gridy, 1,1);
+    }
+        /**
+         * Method for creating text fields
+         * @param flag :
+         *             1 if the text field is for name
+         *             2 if the text field is for description
+         *             3 if the text field is for company name
+         * @return JPanel
+         */
     private JPanel createFields(int flag){
         HintTextField textField = new HintTextField(); //Creating the text field
-        textField.setPreferredSize(new Dimension(300,50)); //Setting the size of the boxes
+        textField.setPreferredSize(new Dimension(300,35)); //Setting the size of the boxes
 
         //Check which field is going to be created
         if(flag==1){
@@ -67,27 +106,7 @@ public class MenuContent extends JPanel implements ActionListener {
         return setupContentLayout(textField, null);
     }
     /**
-     * Method for creating the price field
-     *
-     * @return JPanel
-     */
-    private JPanel createPriceField(){
-        NumberFormat nf = NumberFormat.getCurrencyInstance();
-        nf.setCurrency(Currency.getInstance("BGN"));
-
-        this.price = new JFormattedTextField(nf);
-        this.price.setValue(0);
-        this.price.setColumns(10);
-        this.price.setFont(CustomFonts.TextBoxTextFont());
-
-        this.price.setPreferredSize(new Dimension(100,50));
-        this.price.addFocusListener(new FormattedFieldListener(this.price));
-
-        return this.setupContentLayout(this.price, null);
-    }
-
-    /**
-     * Method for creating 2 containers so that the fields can be aligned easier
+     * Method for creating 2 containers so that the fields and button can be aligned one next to another
      * @param jTextField :
      *            Field to be added to the 2 containers
      * @param button:
@@ -108,6 +127,28 @@ public class MenuContent extends JPanel implements ActionListener {
         return borderContainer;
     }
 
+
+    /**
+     * Method for creating the price field
+     *
+     * @return JPanel
+     */
+    private JPanel createPriceField(){
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        nf.setCurrency(Currency.getInstance("BGN"));
+
+        this.price = new JFormattedTextField(nf);
+        this.price.setValue(0);
+        this.price.setColumns(10);
+        this.price.setFont(CustomFonts.TextBoxTextFont());
+
+        this.price.setPreferredSize(new Dimension(100,35));
+        this.price.addFocusListener(new FormattedFieldListener(this.price));
+
+        return this.setupContentLayout(this.price, null);
+    }
+
+
     /**
      * Method for creating the upload files field an button
      *
@@ -117,11 +158,12 @@ public class MenuContent extends JPanel implements ActionListener {
         JButton selectButton = new JButton("Избор на файл...");
         this.filePath = new JTextField();
 
-        this.filePath.setPreferredSize(new Dimension(400,50));
+        this.filePath.setPreferredSize(new Dimension(200,35));
         this.filePath.setAutoscrolls(true);
+        this.filePath.setFocusable(false);
 
 
-        selectButton.setPreferredSize(new Dimension(100,45));
+        selectButton.setPreferredSize(new Dimension(100,35));
 
         selectButton.addActionListener(this);
 
