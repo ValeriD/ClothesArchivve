@@ -1,6 +1,7 @@
 package clothesarchive.gui.panels.mainContent;
 
 import clothesarchive.MainScreen;
+import clothesarchive.exceptions.CAException;
 import clothesarchive.gui.customSettings.CustomFonts;
 import clothesarchive.gui.customSettings.HintTextField;
 import clothesarchive.gui.customSettings.FormattedFieldListener;
@@ -10,13 +11,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.Currency;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 //TODO create a box for the image and the inserted image should be loaded there
@@ -25,7 +23,8 @@ public class MenuContent extends JPanel implements ActionListener {
     HintTextField description;
     HintTextField company;
     JFormattedTextField price;
-    byte[] file;
+    File file = null;
+    JLabel image;
     JFileChooser fileChooser;
     JTextField filePath;
 
@@ -35,8 +34,19 @@ public class MenuContent extends JPanel implements ActionListener {
         JPanel right= new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
         this.add(generateFields());
-        this.add(right);
+        this.add(generateImageField());
         this.setVisible(true);
+    }
+
+    private JPanel generateImageField() {
+        JPanel imageContainer = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        this.image = new JLabel();
+        this.setImage(null);
+
+        this.addObjectToGridBag(this.image, imageContainer, gbc, 1,1);
+        return imageContainer;
     }
 
     /**
@@ -56,6 +66,7 @@ public class MenuContent extends JPanel implements ActionListener {
         this.addObjectToGridBag(this.createFileUpload(), fieldsContainer, gbc, 1,5 );
         return fieldsContainer;
     }
+
     /**
      * Methods that adds compnent to GridBag panel
      * @param component to be added
@@ -79,14 +90,15 @@ public class MenuContent extends JPanel implements ActionListener {
     private void addObjectToGridBag(Component component, Container container, GridBagConstraints gbc, int gridx, int gridy) {
         this.addObjectToGridBag(component,container, gbc,gridx,gridy, 1,1);
     }
-        /**
-         * Method for creating text fields
-         * @param flag :
-         *             1 if the text field is for name
-         *             2 if the text field is for description
-         *             3 if the text field is for company name
-         * @return JPanel
-         */
+
+    /**
+     * Method for creating text fields
+     * @param flag :
+     *             1 if the text field is for name
+     *             2 if the text field is for description
+     *             3 if the text field is for company name
+     * @return JPanel
+     */
     private JPanel createFields(int flag){
         HintTextField textField = new HintTextField(); //Creating the text field
         textField.setPreferredSize(new Dimension(300,35)); //Setting the size of the boxes
@@ -105,6 +117,7 @@ public class MenuContent extends JPanel implements ActionListener {
 
         return setupContentLayout(textField, null);
     }
+
     /**
      * Method for creating 2 containers so that the fields and button can be aligned one next to another
      * @param jTextField :
@@ -182,14 +195,9 @@ public class MenuContent extends JPanel implements ActionListener {
         this.file = null; //setting the file bytes to null
         int returnVal = fileChooser.showOpenDialog(this); //Setting the opening dialog
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();  //Getting the selected file
+            this.file = fileChooser.getSelectedFile();  //Getting the selected file
             this.filePath.setText(file.getAbsolutePath());  //Setting the file path to the text field
-
-            try {
-                this.file = Files.readAllBytes(file.toPath()); //Converting the file to bytes[]
-            } catch (IOException ex) {
-                Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            this.setImage(this.file);
         } else {
             System.out.println("File access cancelled by user.");
         }
@@ -232,8 +240,12 @@ public class MenuContent extends JPanel implements ActionListener {
         return Double.parseDouble(price);
     }
 
-    public byte[] getFile() {
-        return file;
+    public byte[] getFile() throws CAException {
+        try {
+            return Files.readAllBytes(this.file.toPath());
+        } catch (IOException e) {
+            throw new CAException("Неуспешно запазване на снимката!", 1);
+        }
     }
 
 
@@ -256,7 +268,24 @@ public class MenuContent extends JPanel implements ActionListener {
         this.price.setValue(price);
     }
 
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setImage(File image) {
+        if(file!=null){
+            this.image.setText("");
+            this.image.setIcon(new ImageIcon(image.getAbsolutePath()));
+        }else{
+            this.image.setText("No image");
+        }
+    }
+
+    public void setFile(byte[] file) throws CAException {
+        try {
+            OutputStream os = new FileOutputStream(this.file);
+            os.write(file);
+            os.close();
+        } catch (IOException exception) {
+            this.file = null;
+            throw new CAException("Неуспешно зареждане на снимката", 1);
+        }
+
     }
 }
