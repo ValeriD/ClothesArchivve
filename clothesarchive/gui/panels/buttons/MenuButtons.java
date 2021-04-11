@@ -19,13 +19,14 @@ public class MenuButtons extends JPanel {
 
         //Check buttons for which menu to generate
         if(menu instanceof AddMenu) {
-            this.add(createButton(1,"Добави")); //Adding the left panel
-            this.add(createButton(0,"Откажи"));//Adding the right panel
+            this.add(createButton(1,"Добави", menu)); //Adding the left panel
+            this.add(createButton(2,"Откажи", menu));//Adding the right panel
         }else if(menu instanceof EditMenu){
-            this.add(createButton(1,"Запази"));
-            this.add(createButton(0,"Откажи"));
+            this.add(createButton(1,"Запази", menu));
+            this.add(createButton(2,"Откажи", menu));
         }else if(menu instanceof ViewMenu){
-            this.add(createButton(0,"Назад"));
+            this.add(createButton(0,"Hidden", menu));
+            this.add(createButton(2,"Назад", menu));
         }
 
         this.setVisible(true);
@@ -37,22 +38,28 @@ public class MenuButtons extends JPanel {
      *             1 if the button is for leading
      *             0 if the button is for trailing
      * @param text: the text of the button
+     * @param menu : instance of the parent so that actionCommand can be generated
      * @return JPanel
      */
-    private JPanel createButton(int flag, String text){
+    private JPanel createButton(int flag, String text,Menu menu){
         JButton button= new JButton(); //Creating new button
         button.setPreferredSize(new Dimension(200,45)); //Setting the size
-        button.addActionListener(this.menu); //Adding a listener for the button
+        button.addActionListener(this.menu.getMenuParent()); //Adding a listener for the button
 
         JPanel buttonContainer = new JPanel(); //Creating a panel for the button
         button.setText(text);//Setting the text for the button
+
+        button.setActionCommand(menu.getClassName() + " " + text);
+
         //Checks if which button is wanted to be created
         if(flag==1){
             buttonContainer.setLayout(new FlowLayout(FlowLayout.LEADING)); //Creating FlowLayout so that the button is aligned left
-        }else{
+        }else if(flag==2){
             buttonContainer.setLayout(new FlowLayout(FlowLayout.TRAILING)); //Creating FlowLayout so that the button is aligned right
+        }else if(flag ==0 ){
+            button.setVisible(false);
+            buttonContainer.setLayout(new FlowLayout(FlowLayout.LEADING)); //Creating FlowLayout so that the button is aligned right
         }
-
         buttonContainer.add(button); //Adding the button to the panel
         return buttonContainer;
     }

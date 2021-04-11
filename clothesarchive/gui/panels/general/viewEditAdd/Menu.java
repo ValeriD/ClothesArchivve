@@ -1,6 +1,7 @@
 package clothesarchive.gui.panels.general.viewEditAdd;
 
 import clothesarchive.exceptions.CAException;
+import clothesarchive.gui.MyJFrame;
 import clothesarchive.gui.panels.buttons.MenuButtons;
 import clothesarchive.gui.panels.headings.Heading;
 import clothesarchive.gui.panels.mainContent.MenuContent;
@@ -12,15 +13,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//TODO abstract method save
-public abstract class Menu extends JPanel implements ActionListener {
+public abstract class Menu extends JPanel{
     Heading heading;
     MenuContent content;
     MenuButtons buttons;
     CrudService service;
+    MyJFrame parent;
 
 
-    public Menu(String headingMsg, CrudService service){
+    public Menu(String headingMsg, CrudService service, MyJFrame parent){
+        this.parent = parent;
         this.service = service;
         this.heading = new Heading(headingMsg); //Creating new Panel for the heading
         this.buttons = new MenuButtons(this); // Creating new Panel for the control buttons
@@ -31,8 +33,7 @@ public abstract class Menu extends JPanel implements ActionListener {
         this.add(heading,BorderLayout.NORTH); //Setting the heading position on top side
         this.add(content, BorderLayout.CENTER); //Setting the text fields in the center
         this.add(buttons,BorderLayout.SOUTH); //Setting the buttons on the bottom side
-
-        this.setVisible(true);
+        this.setVisible(false);
     }
 
     /**
@@ -55,17 +56,15 @@ public abstract class Menu extends JPanel implements ActionListener {
 
     protected abstract boolean areFieldsFocusable();
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        if(e.getSource().toString().equals("Откажи") || e.getSource().toString().equals("Назад")){
-            this.content.clearAllFields();
-            this.setVisible(false);
-        }else{
-            checkSave(e);
-        }
-
-
+    public void cancelPerformed() {
+        this.setVisible(false);
+        this.content.clearAllFields();
     }
-    abstract void checkSave(ActionEvent event);
+    abstract public int save();
+
+    abstract public String getClassName();
+
+    public final MyJFrame getMenuParent(){
+        return parent;
+    }
 }

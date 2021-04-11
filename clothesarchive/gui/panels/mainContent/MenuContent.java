@@ -106,6 +106,7 @@ public class MenuContent extends JPanel implements ActionListener {
             textField.setHint("Име на продукта...");
             this.name=textField;
         }else if(flag==2){
+            //TODO create description to be JTextArea
             textField.setHint("Описание на продукта...");
             this.description=textField;
         }else if(flag==3){
@@ -259,6 +260,9 @@ public class MenuContent extends JPanel implements ActionListener {
     }
 
     public byte[] getFile() throws CAException {
+        if(this.file == null){
+            return null;
+        }
         try {
             return Files.readAllBytes(this.file.toPath());
         } catch (IOException e) {
