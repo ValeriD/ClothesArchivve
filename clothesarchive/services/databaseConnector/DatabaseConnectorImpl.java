@@ -28,7 +28,7 @@ public class DatabaseConnectorImpl implements DatabaseConnector {
         try
         {
             ConfigReader reader = new ConfigReader();
-            String url = "jdbc:mysql://"+reader.getDomain()+":"+reader.getPort()+"/"+reader.getDatabaseName()+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Athens";
+            String url = "jdbc:mysql://"+reader.getDomain()+":"+reader.getPort()+"/"+reader.getDatabaseName()+"?characterEncoding=UTF-8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Athens";
             this.connection=DriverManager.getConnection(url,reader.getUser(), reader.getUserPassword());
         }
         catch(Exception e){
@@ -202,7 +202,6 @@ public class DatabaseConnectorImpl implements DatabaseConnector {
         while(this.resultSet.next()){
             records.add(this.serializeRecord(this.resultSet));
         }
-
         return records;
     }
 

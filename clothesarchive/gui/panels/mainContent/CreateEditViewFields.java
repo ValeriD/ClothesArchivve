@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.Currency;
 
-public class MenuContent extends JPanel implements ActionListener {
+public class CreateEditViewFields extends JPanel implements ActionListener {
     HintTextField name;
     HintTextField description;
     HintTextField company;
@@ -25,7 +25,7 @@ public class MenuContent extends JPanel implements ActionListener {
     JTextField filePath;
 
 
-    public MenuContent(){
+    public CreateEditViewFields(){
         this.setLayout(new GridLayout(0,2));
         this.add(generateFields());
         this.add(generateImageField());
@@ -300,13 +300,17 @@ public class MenuContent extends JPanel implements ActionListener {
     }
 
     public void setFile(byte[] file) throws CAException {
-        try {
-            OutputStream os = new FileOutputStream(this.file);
-            os.write(file);
-            os.close();
-        } catch (IOException exception) {
+        if(file!=null) {
+            try {
+                OutputStream os = new FileOutputStream(this.file);
+                os.write(file);
+                os.close();
+            } catch (IOException exception) {
+                this.file = null;
+                throw new CAException("Неуспешно зареждане на снимката", 1);
+            }
+        }else{
             this.file = null;
-            throw new CAException("Неуспешно зареждане на снимката", 1);
         }
 
     }

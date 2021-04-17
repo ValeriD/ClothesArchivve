@@ -18,7 +18,6 @@ import java.util.Optional;
  */
 public interface CrudService {
 
-    //TODO create getById()
      /**
      * Method for handling the save action
      * @param name: the unique name of the product

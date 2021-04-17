@@ -1,9 +1,10 @@
 package clothesarchive.gui;
 
 import clothesarchive.exceptions.CAException;
+import clothesarchive.gui.panels.general.mainMenu.MainMenu;
 import clothesarchive.gui.panels.general.viewEditAdd.AddMenu;
 import clothesarchive.gui.panels.general.viewEditAdd.EditMenu;
-import clothesarchive.gui.panels.general.viewEditAdd.Menu;
+import clothesarchive.gui.panels.general.Menu;
 import clothesarchive.gui.panels.general.viewEditAdd.ViewMenu;
 import clothesarchive.services.CRUD.CrudService;
 import clothesarchive.services.CRUD.CrudServiceImpl;
@@ -11,7 +12,6 @@ import clothesarchive.services.CRUD.CrudServiceImpl;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 /**
  *
@@ -21,6 +21,7 @@ public class MyJFrame extends JFrame implements ActionListener {
     Menu addMenu;
     Menu editMenu;
     Menu viewMenu;
+    MainMenu mainMenu;
 
     public MyJFrame(){
         this.setSize(960,720);
@@ -43,8 +44,10 @@ public class MyJFrame extends JFrame implements ActionListener {
         this.addMenu = new AddMenu(service, this);
         this.editMenu = new EditMenu(service, this);
         this.viewMenu = new ViewMenu(service, this);
-        addMenu.setVisible(true);
-        this.add(addMenu);
+        this.mainMenu = new MainMenu(service,this);
+        mainMenu.setVisible(true);
+        this.add(mainMenu);
+
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -59,24 +62,49 @@ public class MyJFrame extends JFrame implements ActionListener {
             if(command.contains("Откажи")){
                 this.addMenu.cancelPerformed();
                 this.remove(addMenu);
+                mainMenu.showMenu(null);
+                this.add(mainMenu);
             }else if(command.contains("Добави")){
                 if(this.addMenu.save()==0) {
                     this.remove(this.addMenu);
+                    mainMenu.showMenu(null);
+                    this.add(mainMenu);
                 }
             }
         }else if(cl.equals("EditMenu")){
             if(command.contains("Откажи")){
-                this.addMenu.cancelPerformed();
-                this.remove(addMenu);
-            }else if(command.contains("Добави")){
-                if(this.addMenu.save()==0){
-                    this.remove(this.addMenu);
+                this.editMenu.cancelPerformed();
+                this.remove(editMenu);
+                mainMenu.showMenu(null);
+                this.add(mainMenu);
+            }else if(command.contains("Запази")){
+                if(this.editMenu.save()==0){
+                    this.remove(this.editMenu);
+                    mainMenu.showMenu(null);
+                    this.add(mainMenu);
                 }
             }
         }else if(cl.equals("ViewMenu")){
             if(command.contains("Назад")){
                 this.viewMenu.cancelPerformed();
                 this.remove(viewMenu);
+                mainMenu.showMenu(null);
+                this.add(mainMenu);
+            }
+        }else if(cl.equals("MainMenu")){
+            mainMenu.setVisible(false);
+            this.remove(mainMenu);
+            if(command.contains("Добави")){
+                mainMenu.setVisible(false);
+                addMenu.showMenu(null);
+            }else if(command.contains("Редактирай")){
+                editMenu.showMenu(mainMenu.getSelectedItem());
+            }else if(command.contains("Виж")){
+                viewMenu.showMenu(mainMenu.getSelectedItem());
+            }else{
+                mainMenu.deleteRecord(mainMenu.getSelectedItem());
+                mainMenu.showMenu(null);
+                this.add(mainMenu);
             }
         }
     }

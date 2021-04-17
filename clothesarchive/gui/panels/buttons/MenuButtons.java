@@ -1,8 +1,9 @@
 package clothesarchive.gui.panels.buttons;
 
+import clothesarchive.gui.panels.general.mainMenu.MainMenu;
 import clothesarchive.gui.panels.general.viewEditAdd.AddMenu;
 import clothesarchive.gui.panels.general.viewEditAdd.EditMenu;
-import clothesarchive.gui.panels.general.viewEditAdd.Menu;
+import clothesarchive.gui.panels.general.Menu;
 import clothesarchive.gui.panels.general.viewEditAdd.ViewMenu;
 
 import javax.swing.*;
@@ -27,6 +28,12 @@ public class MenuButtons extends JPanel {
         }else if(menu instanceof ViewMenu){
             this.add(createButton(0,"Hidden", menu));
             this.add(createButton(2,"Назад", menu));
+        }else if(menu instanceof MainMenu){
+            this.setLayout(new GridLayout(0,4));
+            this.add(createButton(1, "Добави", menu));
+            this.add(createButton(1, "Редактирай", menu));
+            this.add(createButton(2, "Виж", menu));
+            this.add(createButton(2, "Изтрий", menu));
         }
 
         this.setVisible(true);
@@ -63,6 +70,4 @@ public class MenuButtons extends JPanel {
         buttonContainer.add(button); //Adding the button to the panel
         return buttonContainer;
     }
-
-    //TODO method that returns Action that performs save method in the menu class
 }

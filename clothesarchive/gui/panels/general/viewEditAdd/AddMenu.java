@@ -2,13 +2,19 @@ package clothesarchive.gui.panels.general.viewEditAdd;
 
 import clothesarchive.exceptions.CAException;
 import clothesarchive.gui.MyJFrame;
+import clothesarchive.gui.panels.general.Menu;
 import clothesarchive.services.CRUD.CrudService;
-import java.awt.event.ActionEvent;
 
 public class AddMenu extends Menu {
 
     public AddMenu(CrudService service, MyJFrame parent){
         super("Добавяне на елемент",service, parent);
+    }
+
+    @Override
+    public void showMenu(String name) {
+        this.setVisible(true);
+        parent.add(this);
     }
 
     @Override
@@ -29,6 +35,8 @@ public class AddMenu extends Menu {
             caException.show(this);
             return -1;
         }
+        this.content.clearAllFields();
+        this.setVisible(false);
         return 0;
     }
 
