@@ -3,10 +3,8 @@ package clothesarchive.gui.panels.general;
 import clothesarchive.exceptions.CAException;
 import clothesarchive.gui.MyJFrame;
 import clothesarchive.gui.panels.buttons.MenuButtons;
-import clothesarchive.gui.panels.general.mainMenu.MainMenu;
-import clothesarchive.gui.panels.general.viewEditAdd.AddMenu;
 import clothesarchive.gui.panels.headings.Heading;
-import clothesarchive.gui.panels.mainContent.CreateEditViewFields;
+import clothesarchive.gui.panels.content.CreateEditViewContent;
 import clothesarchive.models.RecordDTO;
 import clothesarchive.services.CRUD.CrudService;
 
@@ -16,7 +14,7 @@ import java.awt.*;
 
 public abstract class Menu extends JPanel{
     protected Heading heading;
-    protected CreateEditViewFields content;
+    protected CreateEditViewContent content;
     protected MenuButtons buttons;
     protected CrudService service;
     protected MyJFrame parent;
@@ -27,7 +25,7 @@ public abstract class Menu extends JPanel{
         this.service = service;
         this.heading = new Heading(headingMsg); //Creating new Panel for the heading
         this.buttons = new MenuButtons(this); // Creating new Panel for the control buttons
-        this.content = new CreateEditViewFields(); //Creating new Panel for the text fields
+        this.content = new CreateEditViewContent(); //Creating new Panel for the text fields
 
         this.setLayout(new BorderLayout()); //Setting the AddMenu to BorderLayout so that the above panels can go top,center and bottom
 

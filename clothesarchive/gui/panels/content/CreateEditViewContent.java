@@ -1,7 +1,12 @@
-package clothesarchive.gui.panels.mainContent;
+package clothesarchive.gui.panels.content;
 
 import clothesarchive.exceptions.CAException;
-import clothesarchive.gui.customSettings.*;
+import clothesarchive.gui.custom.customFields.CADescriptionField;
+import clothesarchive.gui.custom.customFields.CAHintTextField;
+import clothesarchive.gui.custom.customFields.CAFormattedFieldListener;
+import clothesarchive.gui.custom.customSettings.*;
+import clothesarchive.gui.custom.pictures.CAImageResizer;
+import clothesarchive.gui.custom.pictures.CAPictureFilter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +17,10 @@ import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.Currency;
 
-public class CreateEditViewFields extends JPanel implements ActionListener {
-    HintTextField name;
-    HintTextField description;
-    HintTextField company;
+public class CreateEditViewContent extends JPanel implements ActionListener {
+    CAHintTextField name;
+    CADescriptionField description;
+    CAHintTextField company;
     JFormattedTextField price;
     File file = null;
     JButton selectFileButton;
@@ -25,7 +30,7 @@ public class CreateEditViewFields extends JPanel implements ActionListener {
     JTextField filePath;
 
 
-    public CreateEditViewFields(){
+    public CreateEditViewContent(){
         this.setLayout(new GridLayout(0,2));
         this.add(generateFields());
         this.add(generateImageField());
@@ -98,7 +103,7 @@ public class CreateEditViewFields extends JPanel implements ActionListener {
      * @return JPanel
      */
     private JPanel createFields(int flag){
-        HintTextField textField = new HintTextField(); //Creating the text field
+        CAHintTextField textField = new CAHintTextField(); //Creating the text field
         textField.setPreferredSize(new Dimension(300,35)); //Setting the size of the boxes
 
         //Check which field is going to be created
@@ -106,9 +111,12 @@ public class CreateEditViewFields extends JPanel implements ActionListener {
             textField.setHint("Име на продукта...");
             this.name=textField;
         }else if(flag==2){
-            //TODO create description to be JTextArea
-            textField.setHint("Описание на продукта...");
-            this.description=textField;
+            CADescriptionField descriptionField = new CADescriptionField();
+            descriptionField.setPreferredSize(new Dimension(300, 105));
+            descriptionField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            descriptionField.setHint("Описание на продукта...");
+            this.description=descriptionField;
+            return setupContentLayout(new JScrollPane(descriptionField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),null);
         }else if(flag==3){
             textField.setHint("Име на поръчителя...");
             this.company=textField;
@@ -126,7 +134,7 @@ public class CreateEditViewFields extends JPanel implements ActionListener {
      * @return JPanel
      *
      */
-    private JPanel setupContentLayout(JTextField jTextField,JButton button){
+    private JPanel setupContentLayout(Component jTextField,JButton button){
         JPanel borderContainer = new JPanel(new BorderLayout()); //Creating border panel that will contain fieldContainer
         JPanel flowContainer = new JPanel(new FlowLayout(FlowLayout.CENTER)); //Creating the field container
 
@@ -152,10 +160,10 @@ public class CreateEditViewFields extends JPanel implements ActionListener {
         this.price = new JFormattedTextField(nf);
         this.price.setValue(0);
         this.price.setColumns(10);
-        this.price.setFont(CustomFonts.TextBoxTextFont());
+        this.price.setFont(CAFonts.TextBoxTextFont());
 
         this.price.setPreferredSize(new Dimension(100,35));
-        this.price.addFocusListener(new FormattedFieldListener(this.price));
+        this.price.addFocusListener(new CAFormattedFieldListener(this.price));
 
         return this.setupContentLayout(this.price, null);
     }
@@ -180,7 +188,7 @@ public class CreateEditViewFields extends JPanel implements ActionListener {
         selectFileButton.addActionListener(this);
 
         this.fileChooser=new JFileChooser();
-        this.fileChooser.setFileFilter(new CustomPictureFilter());
+        this.fileChooser.setFileFilter(new CAPictureFilter());
         this.fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
         return this.setupContentLayout(filePath, selectFileButton);

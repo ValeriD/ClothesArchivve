@@ -1,4 +1,4 @@
-package clothesarchive.gui.customSettings;
+package clothesarchive.gui.custom.pictures;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

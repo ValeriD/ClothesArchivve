@@ -1,4 +1,4 @@
-package clothesarchive.gui.customSettings;
+package clothesarchive.gui.custom.customFields;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -6,9 +6,9 @@ import javax.swing.event.DocumentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class FormattedFieldListener implements FocusListener, DocumentListener {
+public class CAFormattedFieldListener implements FocusListener, DocumentListener {
     JTextField field;
-    public FormattedFieldListener(JTextField field){
+    public CAFormattedFieldListener(JTextField field){
         this.field = field;
     }
 

@@ -1,24 +1,22 @@
-package clothesarchive.gui.customSettings;
+package clothesarchive.gui.custom.customFields;
+
+import clothesarchive.gui.custom.customSettings.CAFonts;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class HintTextField extends JFormattedTextField implements FocusListener {
+public class CAHintTextField extends JFormattedTextField implements FocusListener {
     private String hint;
 
-    public HintTextField(){
+    public CAHintTextField(){
         super();
         super.addFocusListener(this);
     }
 
     @Override
     public void focusGained(FocusEvent e) {
-        super.setFont(CustomFonts.TextBoxTextFont());
+        super.setFont(CAFonts.TextBoxTextFont());
         if(this.getText().contains(this.hint)) {
             this.setText("");
         }
@@ -36,7 +34,7 @@ public class HintTextField extends JFormattedTextField implements FocusListener 
 
     }
     public void showHint(){
-        super.setFont(CustomFonts.HintFont());
+        super.setFont(CAFonts.HintFont());
         this.setText(hint);
     }
 

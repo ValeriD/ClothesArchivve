@@ -52,6 +52,7 @@ public class MyJFrame extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    //TODO check if there are no selected items
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton button = (JButton) e.getSource();
@@ -92,17 +93,23 @@ public class MyJFrame extends JFrame implements ActionListener {
                 this.add(mainMenu);
             }
         }else if(cl.equals("MainMenu")){
-            mainMenu.setVisible(false);
-            this.remove(mainMenu);
-            if(command.contains("Добави")){
+            try {
                 mainMenu.setVisible(false);
-                addMenu.showMenu(null);
-            }else if(command.contains("Редактирай")){
-                editMenu.showMenu(mainMenu.getSelectedItem());
-            }else if(command.contains("Виж")){
-                viewMenu.showMenu(mainMenu.getSelectedItem());
-            }else{
-                mainMenu.deleteRecord(mainMenu.getSelectedItem());
+                remove(mainMenu);
+                if (command.contains("Добави")) {
+                    addMenu.showMenu(null);
+                } else if (command.contains("Редактирай")) {
+                    editMenu.showMenu(mainMenu.getSelectedItem());
+                } else if (command.contains("Виж")) {
+                    System.out.println(mainMenu.getSelectedItem());
+                    viewMenu.showMenu(mainMenu.getSelectedItem());
+                } else {
+                        mainMenu.deleteRecord(mainMenu.getSelectedItem());
+                }
+
+            }catch (CAException caException){
+                caException.show(mainMenu);
+
                 mainMenu.showMenu(null);
                 this.add(mainMenu);
             }

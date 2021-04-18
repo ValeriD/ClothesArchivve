@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clothesarchive.gui.customSettings;
+package clothesarchive.gui.custom.pictures;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
@@ -12,7 +12,7 @@ import javax.swing.filechooser.FileFilter;
  *
  * @author Valeri Dobrev
  */
-public class CustomPictureFilter extends FileFilter {
+public class CAPictureFilter extends FileFilter {
 
     @Override
     public boolean accept(File file) {

@@ -3,13 +3,13 @@ package clothesarchive.gui.panels.general.mainMenu;
 import clothesarchive.exceptions.CAException;
 import clothesarchive.gui.MyJFrame;
 import clothesarchive.gui.panels.general.Menu;
-import clothesarchive.gui.panels.mainContent.MainMenuFields;
+import clothesarchive.gui.panels.content.MainMenuContent;
 import clothesarchive.services.CRUD.CrudService;
 
 import java.awt.*;
 
 public class MainMenu extends Menu {
-    MainMenuFields mainContent;
+    MainMenuContent mainContent;
 
     public MainMenu(CrudService service, MyJFrame parent){
         super("Всички записи", service,parent);
@@ -26,8 +26,8 @@ public class MainMenu extends Menu {
         }
     }
 
-    public String getSelectedItem(){
-        return mainContent.getSelectedItem().getName();
+    public String getSelectedItem() throws CAException {
+       return mainContent.getSelectedItem().getName();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MainMenu extends Menu {
             remove(mainContent);
         }
         try {
-            this.mainContent = new MainMenuFields(service.getRecords());
+            this.mainContent = new MainMenuContent(service.getRecords());
         } catch (CAException e) {
             e.show(this);
         }
