@@ -54,6 +54,10 @@ public class MyJFrame extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Method that handles all button clicks events
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton button = (JButton) e.getSource();

@@ -39,9 +39,12 @@ public abstract class Menu extends JPanel{
      * Method that is called when we want to show the different menus like Edit, View or Add
      * @param name is null when Add is called, otherwise we make a call to the database to get the record with the given name
      */
-
     abstract public void showMenu(String name);
 
+    /**
+     * Setting values to the fields
+     * @param name
+     */
     protected void fillFields(String name){
         RecordDTO record;
         try {
@@ -59,6 +62,11 @@ public abstract class Menu extends JPanel{
         this.setVisible(false);
         this.content.clearAllFields();
     }
+
+    /**
+     * Method for saving a record
+     * @return 0 if successful
+     */
     abstract public int save();
 
     abstract public String getClassName();

@@ -18,8 +18,6 @@ import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.Currency;
 
-//TODO fix the image rendering
-//TODO fix the update of the picture
 
 public class CreateEditViewContent extends JPanel implements ActionListener {
     CAHintTextField name;
@@ -41,6 +39,10 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
         this.setVisible(true);
     }
 
+    /**
+     * Method that generates the Image component
+     * @return
+     */
     private JPanel generateImageField() {
         JPanel imageContainer = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -217,6 +219,16 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
             System.out.println("File access cancelled by user.");
         }
     }
+
+    /**
+     * Method called when we want to visualize the record in the UI
+     * @param name
+     * @param description
+     * @param company
+     * @param price
+     * @param file
+     * @param focusable true if Edit menu, false if in View menu
+     */
     public void setFields(String name, String description, String company, double price, byte[] file, boolean focusable){
         this.name.setFont(CAFonts.TextBoxTextFont());
         this.company.setFont(CAFonts.TextBoxTextFont());
@@ -314,6 +326,10 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
         this.price.setValue(price);
     }
 
+    /**
+     * Visualizing the record image
+     * @throws IOException
+     */
     public void setImage() throws IOException {
         if(file!=null){
             this.image.setText("");
@@ -323,6 +339,11 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * This method is used when we open a menu and we want to set the blob file from the database
+     * @param file
+     * @throws CAException if the program fails to read the image
+     */
     public void setFile(byte[] file) throws CAException {
         if(file!=null) {
             try {

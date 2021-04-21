@@ -41,8 +41,6 @@ public class MainContentListRenderer extends JPanel implements ListCellRenderer<
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         date.setText(outputFormat.format(value.getDate()));
 
-
-
         if(isSelected){
             changeColor(list.getSelectionBackground());
         }else{
