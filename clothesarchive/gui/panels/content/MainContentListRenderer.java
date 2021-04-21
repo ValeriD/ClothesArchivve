@@ -14,23 +14,22 @@ public class MainContentListRenderer extends JPanel implements ListCellRenderer<
     JLabel company;
 
     public MainContentListRenderer(){
-        this.setLayout(new GridLayout(0,5));
+        this.setLayout(new GridLayout(0,3));
 
         this.name = new JLabel("", JLabel.CENTER);
         name.setFont(CAFonts.TextBoxTextFont());
+        name.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.GRAY));
+
 
         this.company = new JLabel("", JLabel.CENTER);
         company.setFont(CAFonts.TextBoxTextFont());
+        company.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.GRAY));
 
         this.date = new JLabel("", JLabel.CENTER);
         this.date.setFont(CAFonts.TextBoxTextFont());
 
-
-
         this.add(name );
-        this.add(new JSeparator(SwingConstants.VERTICAL));
         this.add(company);
-        this.add(new JSeparator(SwingConstants.VERTICAL));
         this.add(date);
 
     }
@@ -42,15 +41,25 @@ public class MainContentListRenderer extends JPanel implements ListCellRenderer<
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         date.setText(outputFormat.format(value.getDate()));
 
+
+
         if(isSelected){
-            name.setBackground(list.getSelectionBackground());
-            date.setBackground(list.getSelectionBackground());
-            setBackground(list.getSelectionBackground());
+            changeColor(list.getSelectionBackground());
         }else{
-            name.setBackground(list.getBackground());
-            date.setBackground(list.getBackground());
-            setBackground(list.getBackground());
+            if(index%2==0){
+                changeColor(Color.decode("#d7d9d7"));
+            }else{
+                changeColor(Color.WHITE);
+            }
+
         }
         return this;
+    }
+
+    private void changeColor(Color c){
+        name.setBackground(c);
+        date.setBackground(c);
+        company.setBackground(c);
+        this.setBackground(c);
     }
 }

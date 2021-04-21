@@ -40,8 +40,9 @@ public class MainMenu extends Menu {
         } catch (CAException e) {
             e.show(this);
         }
-        this.add(this.mainContent, BorderLayout.CENTER);
         this.setVisible(true);
+        this.requestFocus();
+        this.add(this.mainContent, BorderLayout.CENTER);
     }
 
     @Override

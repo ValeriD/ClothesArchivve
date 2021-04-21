@@ -1,6 +1,7 @@
 package clothesarchive.gui.panels.content;
 
 import clothesarchive.exceptions.CAException;
+import clothesarchive.models.DateComparator;
 import clothesarchive.models.RecordDTO;
 
 import javax.swing.*;
@@ -15,25 +16,23 @@ public class MainMenuContent extends JPanel {
     public MainMenuContent(List<RecordDTO> records){
         this.setLayout(new BorderLayout());
         DefaultListModel<RecordDTO> listModel = new DefaultListModel<>();
+        records.sort(new DateComparator());
+        listModel.addAll(records);
 
-        for(RecordDTO record: records){
-            listModel.addElement(record);
-        }
-
-        jList = new JList(listModel);
+        jList = new JList<>(listModel);
 
         jList.setCellRenderer(new MainContentListRenderer());
         jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         jList.setFixedCellHeight(40);
 
-
         JScrollPane scrollPane = new JScrollPane(jList);
         scrollPane.setColumnHeaderView(createHeadings());
 
-
+        this.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
 
         this.add(scrollPane);
+        this.requestFocus();
         this.setVisible(true);
     }
 
