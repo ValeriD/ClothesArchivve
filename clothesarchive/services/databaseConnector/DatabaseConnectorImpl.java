@@ -9,6 +9,7 @@ import clothesarchive.config.ConfigReader;
 import clothesarchive.exceptions.CAException;
 import clothesarchive.models.RecordDTO;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,11 @@ public class DatabaseConnectorImpl implements DatabaseConnector {
         this.prestatment.setString(3, record.getCompany());
         this.prestatment.setDouble(4, record.getPrice());
         this.prestatment.setTimestamp(5, record.getDate());
-        this.prestatment.setString(6, null);
+        if(record.getFile()==null){
+            this.prestatment.setString(6,null);
+        }else {
+            this.prestatment.setBlob(6, new SerialBlob(record.getFile()));
+        }
         this.prestatment.setLong(7, record.getId());
 
         int affectedRows = this.prestatment.executeUpdate();

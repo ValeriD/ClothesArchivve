@@ -14,8 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.Currency;
+
+//TODO fix the image rendering
+//TODO fix the update of the picture
 
 public class CreateEditViewContent extends JPanel implements ActionListener {
     CAHintTextField name;
@@ -43,7 +47,7 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
 
         this.image = new JLabel();
         try {
-            this.setImage(null);
+            this.setImage();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -205,7 +209,7 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
             this.file = fileChooser.getSelectedFile();  //Getting the selected file
             this.filePath.setText(file.getAbsolutePath());  //Setting the file path to the text field
             try {
-                this.setImage(this.file);
+                this.setImage();
             } catch (IOException ioException) {
                 new CAException("Проблем при преоразмеряването на снимката!", 2).show(this);
             }
@@ -214,20 +218,31 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
         }
     }
     public void setFields(String name, String description, String company, double price, byte[] file, boolean focusable){
+        this.name.setFont(CAFonts.TextBoxTextFont());
+        this.company.setFont(CAFonts.TextBoxTextFont());
+        this.description.setFont(CAFonts.TextBoxTextFont());
+        this.price.setFont(CAFonts.TextBoxTextFont());
+
         setName(name);
         setDescription(description);
         setCompany(company);
         setPrice(price);
         try {
             setFile(file);
+
         } catch (CAException e) {
             e.show(this);
+        }
+        try {
+            setImage();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         this.name.setFocusable(focusable);
         this.description.setFocusable(focusable);
         this.company.setFocusable(focusable);
         this.price.setFocusable(focusable);
-        fileChooser.setFocusable(focusable);
+        this.selectFileButton.setEnabled(focusable);
     }
     /**
      * Method for clearing all the fields
@@ -272,6 +287,7 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
             return null;
         }
         try {
+            System.out.println(this.file.toPath());
             return Files.readAllBytes(this.file.toPath());
         } catch (IOException e) {
             throw new CAException("Неуспешно запазване на снимката!", 1);
@@ -298,7 +314,7 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
         this.price.setValue(price);
     }
 
-    public void setImage(File image) throws IOException {
+    public void setImage() throws IOException {
         if(file!=null){
             this.image.setText("");
             this.image.setIcon(CAImageResizer.resize(file));
@@ -310,10 +326,11 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
     public void setFile(byte[] file) throws CAException {
         if(file!=null) {
             try {
+                this.file = new File("static/icons/temp.png");
                 OutputStream os = new FileOutputStream(this.file);
                 os.write(file);
                 os.close();
-            } catch (IOException exception) {
+            } catch (IOException | NullPointerException exception) {
                 this.file = null;
                 throw new CAException("Неуспешно зареждане на снимката", 1);
             }

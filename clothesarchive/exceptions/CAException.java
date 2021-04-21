@@ -28,7 +28,6 @@ public class CAException extends Exception{
     public void show(Component parent){
         if(this.flag==0){
             JOptionPane.showMessageDialog (parent, this.getMessage(), "Information", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println(this.getMessage());
         }else if(this.flag==1){
             JOptionPane.showMessageDialog(parent, this.getMessage(), "Warning!", JOptionPane.WARNING_MESSAGE);
         }else if(this.flag==2){
