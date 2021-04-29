@@ -118,11 +118,16 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
             this.name=textField;
         }else if(flag==2){
             CADescriptionField descriptionField = new CADescriptionField();
-            descriptionField.setPreferredSize(new Dimension(300, 105));
             descriptionField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
             descriptionField.setHint("Описание на продукта...");
+            descriptionField.setLineWrap(true);
             this.description=descriptionField;
-            return setupContentLayout(new JScrollPane(descriptionField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),null);
+
+            JScrollPane scrollPane = new JScrollPane(descriptionField);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setPreferredSize(new Dimension(300,100));
+
+            return setupContentLayout(scrollPane,null);
         }else if(flag==3){
             textField.setHint("Име на поръчителя...");
             this.company=textField;
@@ -266,6 +271,12 @@ public class CreateEditViewContent extends JPanel implements ActionListener {
         this.description.showHint();
         this.name.showHint();
         this.file=null;
+        this.image.setIcon(null);
+        try {
+            this.setImage();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

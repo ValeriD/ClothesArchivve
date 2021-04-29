@@ -14,12 +14,18 @@ public class CADescriptionField extends JTextArea implements FocusListener {
         super.addFocusListener(this);
     }
 
-
+    @Override
+    public String getText() {
+        if(super.getText().contains(this.hint)){
+            return "";
+        }
+        return super.getText();
+    }
 
     @Override
     public void focusGained(FocusEvent e) {
         super.setFont(CAFonts.TextBoxTextFont());
-        if(this.getText().contains(this.hint)) {
+        if(super.getText().contains(this.hint)) {
             this.setText("");
         }
     }
