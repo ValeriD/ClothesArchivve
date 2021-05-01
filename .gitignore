@@ -1,4 +1,4 @@
 /out/
 .idea/
 lib/
-/clothesarchive/config/app.config
+/src/main/java/config/app.config
